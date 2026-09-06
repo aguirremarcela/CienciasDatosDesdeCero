@@ -129,3 +129,46 @@ all_urls = [a['href']
 for a in soup('a')
 if a.has_attr('href')]
 print(len(all_urls))
+
+
+##Utilizar API
+
+import json
+serialized = """{ "title" : "Data Science Book",
+"author" : "Joel Grus",
+"publicationYear" : 2019,
+"topics" : [ "data", "science", "data science"] }"""
+# analiza JSON para crear un dict de Python
+deserialized = json.loads(serialized)
+
+print(deserialized["publicationYear"] )#muestra 2019
+
+assert "data science" in deserialized["topics"]
+
+##Cuando las respuesta de la API viene como XML
+
+#Hay que usar Beautiful Soup como ya vimos
+
+
+### Utilizar una API No AUTENTICADA
+
+import requests, json
+github_user = "joelgrus"
+endpoint = f"https://api.github.com/users/{github_user}/repos"
+repos = json.loads(requests.get(endpoint).text)
+
+from collections import Counter
+from dateutil.parser import parse
+dates = [parse(repo["created_at"]) for repo in repos]
+month_counts = Counter(date.month for date in dates)
+weekday_counts = Counter(date.weekday() for date in dates)
+print(month_counts)
+print(weekday_counts)
+last_5_repositories = sorted(repos,
+key=lambda r: r["pushed_at"],
+reverse=True)[:5]
+last_5_languages = [repo["language"]
+for repo in last_5_repositories]
+
+
+###Encontrar API
